@@ -11,7 +11,7 @@ import requests
 import logging
 import re
 import os
-import eyeD3
+from mp3_zing_downloader.mutagen.easyid3 import EasyID3
 
 HOST = "http://mp3.zing.vn/"
 
@@ -35,7 +35,7 @@ class Song(object):
             genres = [g.strip() for g in genres.split(',')]
         self.name = name
         self.artist = artist
-        self.album = album or ''
+        self.album = album or u''
         self.genres = genres or []
         self.resource_url = resource_url
 
@@ -49,18 +49,12 @@ class Song(object):
 
     def write_metadata(self):
         print "Rewriting metadata ...",
-        tag = eyeD3.Tag()
-        tag.link(self.abs_path)
-        tag.setVersion(eyeD3.ID3_DEFAULT_VERSION)
-        tag.setTextEncoding(eyeD3.UTF_8_ENCODING)
-        tag.setTitle(self.name)
-        tag.setAlbum(self.album)
-        tag.setArtist(self.artist)
-        # genre = eyeD3.Genre()
-        # genre.parse(u', '.join(self.genres))
-        # TODO fuck mp3.zing.vn, the illegal generes
-        # tag.setGenre(genre)
-        tag.update()
+        audio = EasyID3(self.abs_path)
+        audio.delete()
+        audio["title"] = self.name
+        audio["album"] = self.album
+        audio["artist"] = self.artist
+        audio.save()
         print "Done"
 
     def __unicode__(self):
