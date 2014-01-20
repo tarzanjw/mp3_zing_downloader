@@ -29,7 +29,7 @@ Sử dụng
 
 Để download tất cả các bài hát trong 1 url:
 
-    ${python_dir}/bin/mp3_zing_downloader {url} --dir={DIR}
+    ${python_dir}/bin/mp3zingdownload {url} --dir={DIR}
 
 Trong đó DIR là thư mục sẽ lưu các bài hát download về, nếu không chỉ định thì là thư mục hiện tại.
 
