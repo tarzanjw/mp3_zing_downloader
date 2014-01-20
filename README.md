@@ -20,6 +20,8 @@ Cài đặt
 
     pip install mp3_zing_downloader
 
+> Chú ý hiện tại mới test với Ubuntu, Python 2.7, no virtualenv (default)
+
 ### clone hoặc download source code về máy, 1 thưc mục bất kỳ. Tạm gọi là src
 
     cd src
