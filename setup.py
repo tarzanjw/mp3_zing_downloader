@@ -11,12 +11,13 @@ with open(os.path.join(here, 'CHANGES.md')) as f:
 
 install_requires = [
     "BeautifulSoup4",
-    "requests >= 2.0"
+    "requests >= 2.0",
+    "eyeD3",
 ]
 
 setup(
     name='mp3_zing_downloader',
-    version='0.1.0',
+    version='0.1.4',
     author='Hoc .T Do',
     author_email='hoc3010@gmail.com',
     packages=find_packages(),

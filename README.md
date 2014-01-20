@@ -17,7 +17,12 @@ Cài đặt
 -------
 
 ### Dùng pip:
-> Đang cập nhật
+
+    pip install mp3_zing_downloader --allow-external eyeD3 --allow-unverified
+    eyeD3
+
+Sorry các bạn vì sử dụng 1 package hơi vớ vẩn (dùng xong mới biết,
+không muốn sửa) là eyeD3 nên ở trên phải thêm 2 options vào.
 
 ### clone hoặc download source code về máy, 1 thưc mục bất kỳ. Tạm gọi là src
 
