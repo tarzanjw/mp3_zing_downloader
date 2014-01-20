@@ -35,8 +35,8 @@ class Song(object):
             genres = [g.strip() for g in genres.split(',')]
         self.name = name
         self.artist = artist
-        self.album = album
-        self.genres = genres
+        self.album = album or ''
+        self.genres = genres or []
         self.resource_url = resource_url
 
     @property
