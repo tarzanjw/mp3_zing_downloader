@@ -23,11 +23,13 @@ __all__ = ["FLAC", "Open", "delete"]
 
 import struct
 from cStringIO import StringIO
-from _vorbis import VCommentDict
+import sys
+
+from mutagen._vorbis import VCommentDict
 from mutagen import FileType
 from mutagen._util import insert_bytes
 from mutagen.id3 import BitPaddedInt
-import sys
+
 if sys.version_info >= (2, 6):
     from functools import reduce
 

@@ -1,5 +1,4 @@
 #coding=utf-8
-from pkg_resources import yield_lines
 
 __author__ = 'tarzan'
 
@@ -11,7 +10,7 @@ import requests
 import logging
 import re
 import os
-from mp3_zing_downloader.mutagen.easyid3 import EasyID3
+from mutagen.easyid3 import EasyID3
 
 HOST = "http://mp3.zing.vn/"
 
