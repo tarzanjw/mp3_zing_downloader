@@ -11,6 +11,7 @@ import logging
 import re
 import os
 from mutagen.easyid3 import EasyID3
+from mutagen import mp3, _id3frames
 
 HOST = "http://mp3.zing.vn/"
 
@@ -48,8 +49,7 @@ class Song(object):
 
     def write_metadata(self):
         print "Rewriting metadata ...",
-        audio = EasyID3(self.abs_path)
-        audio.delete()
+        audio = mp3.MP3(self.abs_path, ID3=EasyID3)
         audio["title"] = self.name
         audio["album"] = self.album
         audio["artist"] = self.artist
@@ -72,7 +72,7 @@ def _parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('url',
                    help='The url to start downloading')
-    parser.add_argument('--loglevel', default=False,
+    parser.add_argument('--loglevel', default="INFO",
                         help="log level for the tool")
     parser.add_argument('--dir', default=os.getcwd(),
                         help="Directory to save songs")
@@ -178,19 +178,24 @@ def _download_song(song, force_redownload=False):
     """
     mp3_path = song.abs_path
     mp3_dir = os.path.dirname(mp3_path)
-    if os.path.exists(mp3_path) and not force_redownload:
+    existed = os.path.exists(mp3_path)
+    if existed and not force_redownload:
         print "%s already exists, ignore downloading" % mp3_path
+        return
 
-    print "Start downloading song %s ..." % song,
-    mp3_data = requests.get(song.resource_url).content
-    print "Done, %d bytes downloaded" % len(mp3_data)
-    print "Saving to %s ..." % mp3_path,
+    if not existed:
+        print "Start downloading song %s ..." % song,
+        mp3_data = requests.get(song.resource_url).content
+        print "Done, %d bytes downloaded" % len(mp3_data)
+        print "Saving to %s ..." % mp3_path,
 
-    if not os.path.exists(mp3_dir):
-        os.makedirs(mp3_dir)
-    with open(mp3_path, "w") as f:
-        f.write(mp3_data)
-    print "Done, %d bytes were written" % os.path.getsize(mp3_path)
+        if not os.path.exists(mp3_dir):
+            os.makedirs(mp3_dir)
+        with open(mp3_path, "w") as f:
+            f.write(mp3_data)
+        print "Done, %d bytes were written" % os.path.getsize(mp3_path)
+    else:
+        print "File existed, ignore downloading: %s" % mp3_path
     song.write_metadata()
 
 def main():
