@@ -1,6 +1,6 @@
 __author__ = 'tarzan'
 
-from setuptools import setup, find_packages
+from setuptools import setup
 import os
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -10,18 +10,16 @@ with open(os.path.join(here, 'CHANGES.md')) as f:
     CHANGES = f.read()
 
 install_requires = [
-    "BeautifulSoup4",
+    'lxml',
     "requests >= 2.0",
-    "lxml",
-    "BeautifulSoup4",
 ]
 
 setup(
     name='mp3_zing_downloader',
-    version='0.1.8',
+    version='1.0',
     author='Hoc .T Do',
     author_email='hoc3010@gmail.com',
-    packages=find_packages(),
+    packages=['mp3_zing_downloader', ],
     scripts=[],
     url='https://github.com/tarzanjw/mp3_zing_downloader',
     license='LICENSE',

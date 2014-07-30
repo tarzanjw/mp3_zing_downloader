@@ -1,3 +1,5 @@
+.tox/
+.mp3-venv/
 *.py[cod]
 .idea
 

@@ -1,7 +1,7 @@
 mp3_zing_downloader
 ===================
 
-A Tool for batch download on mp3.zing.vn
+A tool for batch download on mp3.zing.vn
 
 Tính năng
 ---------
@@ -16,23 +16,14 @@ Tính năng
 Cài đặt
 -------
 
-### Dùng pip:
-
     pip install mp3_zing_downloader
-
-> Chú ý hiện tại mới test với Ubuntu, Python 2.7, no virtualenv (default)
-
-### clone hoặc download source code về máy, 1 thưc mục bất kỳ. Tạm gọi là src
-
-    cd src
-    python setup.py install
 
 Sử dụng
 -------
 
 Để download tất cả các bài hát trong 1 url:
 
-    ${python_dir}/bin/mp3zingdownload {url} --dir={DIR}
+    $mp3zingdownload {url} --dir={DIR}
 
 Trong đó DIR là thư mục sẽ lưu các bài hát download về, nếu không chỉ định thì là thư mục hiện tại.
 
