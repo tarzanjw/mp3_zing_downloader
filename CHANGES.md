@@ -1,3 +1,8 @@
+1.0.1
+-----
+
+* Fix bug: requires 'stagger' at package installing (setup.py)
+
 1.0
 -----
 
