@@ -17,7 +17,7 @@ install_requires = [
 
 setup(
     name='mp3_zing_downloader',
-    version='1.0.1',
+    version='1.1',
     author='Hoc .T Do',
     author_email='hoc3010@gmail.com',
     packages=['mp3_zing_downloader', ],

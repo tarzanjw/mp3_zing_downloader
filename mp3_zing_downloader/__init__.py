@@ -14,7 +14,7 @@ import logging
 import re
 import os
 
-HOST = "http://mp3.zing.vn/"
+HOST = "http://mp3.zing.vn"
 
 DEST_DIRECTORY = os.getcwd()
 
@@ -113,9 +113,9 @@ def _download_html_from_url(url):
     html = res.text
     return html
 
-
-_re_song_link = re.compile(r"/bai-hat/[\w-]+/[\w-]+\.html")
-
+_re_song_link = re.compile("(?:%s)?" % re.escape(HOST) + r"/bai-hat/[\w-]+/[\w-]+\.html")
+_re_album_link = re.compile("(?:%s)?" % re.escape(HOST) + r"/album/[\w-]+/[\w-]+\.html")
+_re_genre_link = re.compile("(?:%s)?" % re.escape(HOST) + r"/the-loai-bai-hat/[\w-]+/[\w-]+\.html")
 
 def is_song_url(url):
     """
@@ -144,15 +144,22 @@ def _find_songs(songs_url):
     >>> songs = list(_find_songs(HOST + '/nghe-si/Le-Quyen/bai-hat'))
     >>> type(songs)
     <class 'list'>
-    >>> bool(songs)
-    True
+    >>> len(songs)
+    21
     """
     logger.info("Finding songs")
 
     crawled_urls = set([songs_url])
     queue = collections.deque([songs_url, ])
+    yield songs_url
+
     while len(queue):
         songs_url = queue.popleft()
+
+        # do not find song urls in song detail page
+        # new in version 1.1
+        if is_song_url(songs_url):
+            continue
         html_doc = _download_html_from_url(songs_url)
         matches = _re_song_link.finditer(html_doc)
         urls = list(set([m.group() for m in matches]))
@@ -160,7 +167,7 @@ def _find_songs(songs_url):
         for url in urls:
             yield url
         tree = lxml.html.fromstring(html_doc)
-        pages = tree.xpath("//ul[contains(@class, 'pagination')]//a")
+        pages = tree.xpath("//div[contains(@class, 'pagination')]//ul/li/a")
         for a in pages:
             next_url = a.attrib.get('href', None)
             if not next_url:
@@ -184,9 +191,11 @@ def _fetch_song_info_from_url(url):
     >>> song = _fetch_song_info_from_url('/bai-hat/De-Nho-Mot-Thoi-Ta-Da-Yeu-Le-Quyen/ZWZBFB9C.html')
     >>> song.__str__()
     '(Để Nhớ Một Thời Ta Đã Yêu) Để Nhớ Một Thời Ta Đã Yêu - Lệ Quyên #http://mp3.zing.vn/xml/load-song/MjAxMSUyRjA1JTJGMjAlMkYyJTJGOSUyRjI5ZGUwNGIwNmY1OTVjMmZkMTYyNTE5NmQ2ODg4Y2ZkLm1wMyU3QzI='
+    >>> song.genres
+    ['Việt Nam', 'Nhạc Trẻ']
     """
     if not url.startswith("http"):
-        url = HOST + url.lstrip("/")
+        url = HOST + '/' + url.lstrip("/")
     logger.info("Start fetching song information from url %s" % url)
     html_doc = requests.get(url).text
     tree = lxml.html.fromstring(html_doc)
@@ -196,28 +205,27 @@ def _fetch_song_info_from_url(url):
         return None
     name = name[0]
 
-    artist = name.xpath('//h1/following-sibling::h2/a')
+    artist = name.xpath('//h1/following-sibling::*/h2/a')
     if not artist:
         logger.warn('Can not fetch song artist from "%s"' % url)
         return None
-    logger.debug(artist)
     artist = artist[0].text
     name = name.text
 
-    song_info = tree.xpath("//p[contains(@class, 'song-info')]")
-    if not len(song_info):
+    song_info_els = tree.xpath("//div[contains(@class, 'info-content')]//a")
+    if not len(song_info_els):
         logger.warn('Can not fetch song info from "%s"' % url)
         return None
-    song_info = song_info[0]
-
-    album = [a.text for a in song_info.xpath('./a')
-             if a.attrib.get('href', '').startswith('/album')]
-    genres = [a.text for a in song_info.xpath('./a')
-             if a.attrib.get('href', '').startswith('/the-loai-bai-hat')]
+    album = [a.text for a in song_info_els
+             if _re_album_link.match(a.attrib.get('href', ''))]
+    genres = [a.text for a in song_info_els
+             if _re_genre_link.match(a.attrib.get('href', ''))]
     if len(album):
         album = album[0]
     else:
         album = None
+    logger.debug('Album: %s' % album)
+    logger.debug('Genres: %s' % genres)
     xml_url = _re_song_resource_xml.search(html_doc)
     if not xml_url:
         logger.warn("XML URL not found")
@@ -266,6 +274,7 @@ def _download_song(song, force_redownload=False):
 
 def main():
     args = _parse_arguments()
+    logger.setLevel(logging.INFO)
     url = args.url
     if is_song_url(url):
         _fetch_song_info_from_url(url)

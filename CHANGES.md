@@ -1,3 +1,9 @@
+1.1
+---
+
+* Change to compatible with zing's new html structure.
+* Do not crawl next links in song detail page
+
 1.0.1
 -----
 
