@@ -1,7 +1,7 @@
 mp3_zing_downloader
 ===================
 
-Last update: 2016/09/30
+**Last update: 2016/09/30**
 
 A tool for batch download on mp3.zing.vn
 
