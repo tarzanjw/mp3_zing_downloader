@@ -31,6 +31,20 @@ class Mp3ZingSpider(CrawlSpider):
             ),
             callback='parse_song_info'
         ),
+        # an artist
+        scrapy.spiders.Rule(
+            LinkExtractor(
+                allow=('/nghe-si/[\w-]+/bai-hat', ),
+            ),
+            follow=True,
+        ),
+        # # a album
+        # scrapy.spiders.Rule(
+        #     LinkExtractor(
+        #         allow=('/album/[\w-]+/[\w-]+\.html', ),
+        #     ),
+        #     follow=False,
+        # ),
     ]
 
     def parse_song_info(self, res):
@@ -51,10 +65,11 @@ class Mp3ZingSpider(CrawlSpider):
                               '//a[contains(@class, "genre-track-log")]/text()')]
         item['info_url'] = res.xpath(
             "//div[@id='html5player']/@data-xml")[0].extract().strip()
+        meta = {'item': item}
         return scrapy.Request(
             url=item['info_url'],
             callback=self.parse_song,
-            meta=item,
+            meta=meta,
         )
 
     def parse_song(self, res):
@@ -68,7 +83,7 @@ class Mp3ZingSpider(CrawlSpider):
                 url = 'http://' + url
             return url
 
-        item = res.meta
+        item = res.meta['item']
 
         info = json.loads(res.text)
         songdata = info['data'][0]
