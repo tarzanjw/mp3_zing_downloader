@@ -1,3 +1,9 @@
+1.3
+---
+
+* Use scrapy
+* Multi artist list
+
 1.1
 ---
 

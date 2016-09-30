@@ -10,14 +10,15 @@ with open(os.path.join(here, 'CHANGES.md')) as f:
     CHANGES = f.read()
 
 install_requires = [
+    'scrapy',
     'stagger',
-    'lxml',
+    # 'lxml',
     "requests >= 2.0",
 ]
 
 setup(
     name='mp3_zing_downloader',
-    version='1.1',
+    version='1.3.3',
     author='Hoc .T Do',
     author_email='hoc3010@gmail.com',
     packages=['mp3_zing_downloader', ],
